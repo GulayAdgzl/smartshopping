@@ -17,18 +17,28 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+   buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_BASE_URL", "\"https://api.production.com/\"")
+        }
+        debug {
+            buildConfigField("String", "API_BASE_URL", "\"https://api.development.com/\"")
         }
     }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     kotlinOptions {
         jvmTarget = "11"
