@@ -1,23 +1,18 @@
 class CreateShoppingListUseCase @Inject constructor(
-    private val shoppingListRepository: ShoppingListRepository
+    private val repository: ShoppingListRepository
 ) {
-    suspend operator fun invoke(
-        name: String,
-        budget: Double
-    ): Flow<Resource<ShoppingList>> = flow {
-        emit(Resource.Loading())
-        try {
-            val shoppingList = ShoppingList(
+    suspend operator fun invoke(name: String, budget: Double): ShoppingList {
+        require(name.isNotBlank()) { "Liste adı boş olamaz" }
+        require(budget > 0) { "Bütçe 0'dan büyük olmalıdır" }
+
+        return repository.createShoppingList(
+            ShoppingList(
                 id = UUID.randomUUID().toString(),
                 name = name,
-                items = emptyList(),
-                totalBudget = budget,
+                itemCount = 0,
+                budget = budget,
                 createdAt = System.currentTimeMillis()
             )
-            shoppingListRepository.createShoppingList(shoppingList)
-            emit(Resource.Success(shoppingList))
-        } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Alışveriş listesi oluşturulamadı"))
-        }
+        )
     }
 }
